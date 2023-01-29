@@ -22,38 +22,61 @@ import json
 import random
 import urllib.request
 
-# Server API URLs
+# Server API URL
 QUERY = "http://localhost:8080/query?id={}"
 
-# 500 server request
+# Number of server requests
 N = 500
 
 
 def getDataPoint(quote):
-    """ Produce all the needed values to generate a datapoint """
-    """ ------------- Update this function ------------- """
+    """
+    Produce all the needed values to generate a datapoint.
+
+    Parameters:
+    quote (dict): Dictionary containing the quote information.
+
+    Returns:
+    tuple: Tuple of stock name, bid price, ask price, and average price.
+    """
     stock = quote['stock']
     bid_price = float(quote['top_bid']['price'])
     ask_price = float(quote['top_ask']['price'])
-    price = bid_price
+    price = (bid_price + ask_price) / 2
     return stock, bid_price, ask_price, price
 
 
 def getRatio(price_a, price_b):
-    """ Get ratio of price_a and price_b """
-    """ ------------- Update this function ------------- """
-    return 1
+    """
+    Get ratio of price_a and price_b.
+
+    Parameters:
+    price_a (float): First price to be used in the ratio calculation.
+    price_b (float): Second price to be used in the ratio calculation.
+
+    Returns:
+    float or None: The ratio of price_a and price_b, or None if price_b is 0.
+    """
+    if price_b == 0:
+        return None
+    return price_a / price_b
 
 
 # Main
 if __name__ == "__main__":
-    # Query the price once every N seconds.
-    for _ in iter(range(N)):
-        quotes = json.loads(urllib.request.urlopen(QUERY.format(random.random())).read())
 
+    # Query the price once every N seconds.
+    # Get a price directory where the key-value pair is stock name-price
+    for _ in range(N):
+        quotes = json.loads(urllib.request.urlopen(
+            QUERY.format(random.random())).read())
+
+        prices = {}
         """ ----------- Update to get the ratio --------------- """
         for quote in quotes:
             stock, bid_price, ask_price, price = getDataPoint(quote)
-            print("Quoted %s at (bid:%s, ask:%s, price:%s)" % (stock, bid_price, ask_price, price))
+            prices[stock] = price
+            print("Quoted %s at (bid:%s, ask:%s, price:%s)" %
+                  (stock, bid_price, ask_price, price))
 
-        print("Ratio %s" % getRatio(price, price))
+        print("Ratio %s" % (getRatio(prices['ABC'], prices['DEF'])))
