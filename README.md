@@ -18,7 +18,3 @@ where "filename.py" is the name of the file you want to run.
 # Contributions
 
 If you wish to contribute to the solution, please fork the repository and create a pull request with your changes.
-
-# License
-
-This project is licensed under the MIT License.
